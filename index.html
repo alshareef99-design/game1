@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WELCOME TO THE GAME!</title>
+    <link rel="stylesheet" href="body.css">
+</head>
+<body>
+    <div class="container">
+        <div>
+            <p id="dynamic-text"></p>
+            <input type="text" id="player-numbers" placeholder="Enter your 3 numbers (e.g., 1 2 3)">
+            <button id="submit">Play</button>
+        </div>
+        <div id="guess-options" style="display:none;">
+            <p>How many numbers are correct?</p>
+            <button class="guess-option" data-correct="0">0 Correct</button>
+            <button class="guess-option" data-correct="1">1 Correct</button>
+            <button class="guess-option" data-correct="2">2 Correct</button>
+            <button class="guess-option" data-correct="3">3 Correct</button>
+        </div>
+        <p id="result"></p>
+        <p id="attempts"></p>
+        <p id="computer-guess"></p>
+        <button id="restart" style="display:none;">Play Again</button>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
