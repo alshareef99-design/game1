@@ -11,11 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateRandomNumbers() {
         computerNumbers = [];
         while (computerNumbers.length < 3) {
-            const num = Math.floor(Math.random() * 10) + 1; // Random number between 1 and 10
+            const num = Math.floor(Math.random() * 9) + 1; // Random number between 1 and 10
             if (!computerNumbers.includes(num)) {
                 computerNumbers.push(num);
             }
         }
+        console.log('Computer Numbers:', computerNumbers); // For debugging
     }
 
     function handleGuess() {
@@ -29,21 +30,24 @@ document.addEventListener('DOMContentLoaded', () => {
         attempts++;
         
         let correctNumbers = 0;
-        let feedback = '';
+        let correctPositions = 0;
 
-        playerNumbers.forEach(num => {
+        // Check for correct numbers and correct positions
+        playerNumbers.forEach((num, index) => {
             if (computerNumbers.includes(num)) {
                 correctNumbers++;
+                if (computerNumbers[index] === num) {
+                    correctPositions++;
+                }
             }
         });
 
-        if (correctNumbers === 3) {
+        if (correctPositions === 3) {
             resultParagraph.textContent = `Congratulations! You guessed all 3 numbers correctly in ${attempts} attempts.`;
             submitButton.disabled = true;
             restartButton.style.display = 'inline';
         } else {
-            feedback = `${correctNumbers} number${correctNumbers > 1 ? 's' : ''} correct. Try again!`;
-            resultParagraph.textContent = feedback;
+            resultParagraph.textContent = ` with ${correctPositions} in the correct position. Try again!`;
         }
 
         attemptsParagraph.textContent = `Attempts: ${attempts}`;
