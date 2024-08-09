@@ -31,10 +31,11 @@ body {
     background-color: #9b0b0b;
 }
 
+
 .container {
     text-align: center;
     padding: 20px;
-    border: 2px solid #2e0505;
+    border: 2px solid #ffc5c5;
     border-radius: 8px;
     background-color: #cb5e5e;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -50,14 +51,13 @@ input {
 }
 
 input:focus {
-    border-color: #007BFF;
+    border-color: #3295fe;
 }
 
 button {
-    padding: 5px 10px;
-    background-color: #95584c;
-    color: white;
-    border: none;
+    padding: 8px 30px;
+    background-color: #dd8472;
+    color: rgb(255, 255, 255);
     border-radius: 4px;
     cursor: pointer;
 }
