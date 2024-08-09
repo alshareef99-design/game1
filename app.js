@@ -13,13 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let playerNumbers = [];
     let attempts = 0;
     let computerGuess = [];
-    let computerGuessedCorrectly = false;
     let previousComputerGuesses = [];
 
     function generateRandomNumbers() {
         computerNumbers = [];
         while (computerNumbers.length < 3) {
-            const num = Math.floor(Math.random() * 9) + 1; // Random number between 1 and 10
+            const num = Math.floor(Math.random() * 9) + 1; // Random number between 1 and 9
             if (!computerNumbers.includes(num)) {
                 computerNumbers.push(num);
             }
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         do {
             guess = [];
             while (guess.length < 3) {
-                const num = Math.floor(Math.random() * 9) + 1; // Random number between 1 and 10
+                const num = Math.floor(Math.random() * 9) + 1; // Random number between 1 and 9
                 guess.push(num); // Allow duplicates in computer's guess
             }
         } while (previousComputerGuesses.some(pastGuess => JSON.stringify(pastGuess) === JSON.stringify(guess)));
@@ -75,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handlePlayerGuess() {
         playerNumbers = playerInput.value.split(/\s+/).map(num => parseInt(num.trim(), 10));
 
+        // Validate input
         if (playerNumbers.length !== 3 || playerNumbers.some(isNaN)) {
             resultParagraph.textContent = 'Please enter exactly 3 valid numbers separated by spaces.';
             playerInput.classList.add('shake');
@@ -82,13 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Increment attempts only after a valid guess
         attempts++;
+
         computerGuess = generateComputerGuess();
         const playerEvaluation = evaluateGuess(playerNumbers, computerNumbers);
         const computerEvaluation = evaluateGuess(computerGuess, playerNumbers);
 
-        resultParagraph.textContent = `Your guess: ${playerNumbers.join(' ')} - ${playerEvaluation.correctPositions} in the correct position, ${playerEvaluation.correctNumbers} correct number(s) in the wrong position.`;
-        computerGuessParagraph.textContent = `Computer's guess: ${computerGuess.join(' ')} - ${computerEvaluation.correctPositions} in the correct position, ${computerEvaluation.correctNumbers} correct number(s) in the wrong position.`;
+        resultParagraph.textContent = `Your guess: ${playerNumbers.join(' ')} --- ${playerEvaluation.correctPositions} in the correct position.`;
+        computerGuessParagraph.textContent = `Computer's guess: ${computerGuess.join(' ')}`;
 
         if (playerEvaluation.correctPositions === 3) {
             resultParagraph.textContent = `Congratulations! You guessed all 3 numbers correctly in ${attempts} attempts.`;
@@ -101,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             restartButton.style.display = 'inline';
             guessOptions.style.display = 'none'; // Hide guess options
         } else {
+            // Let the player choose how many numbers the computer guessed correctly
             guessOptions.style.display = 'block'; // Show guess options for the next player move
         }
 
@@ -109,18 +112,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleGuessOptionClick(event) {
         const selectedCorrect = parseInt(event.target.dataset.correct, 10);
+        const computerGuessEvaluation = evaluateGuess(computerGuess, computerNumbers);
 
-        if (!computerGuessedCorrectly) {
-            const computerGuessEvaluation = evaluateGuess(computerGuess, computerNumbers);
-
-            if (selectedCorrect === computerGuessEvaluation.correctNumbers) {
-                resultParagraph.textContent = `Computer guessed correctly with ${computerGuessEvaluation.correctNumbers} numbers.`;
-                computerGuessedCorrectly = true;
-                guessOptions.style.display = 'none'; // Hide guess options since computer has guessed correctly
-            } else {
-                resultParagraph.textContent = `Computer's guess was ${computerGuess.join(' ')}. You chose ${selectedCorrect} correct, which is incorrect.`;
-                guessOptions.style.display = 'none'; // Hide guess options until next round
-            }
+        if (selectedCorrect === 3) {
+            // If the player selects that the computer guessed all 3 numbers correctly, the computer wins
+            resultParagraph.textContent = `Computer wins! The computer guessed all 3 numbers correctly: ${computerGuess.join(' ')}.`;
+            submitButton.disabled = true;
+            restartButton.style.display = 'inline';
+            guessOptions.style.display = 'none'; // Hide guess options
+        } else if (selectedCorrect === computerGuessEvaluation.correctNumbers) {
+            resultParagraph.textContent = ` Computer guessed ${computerGuessEvaluation.correctNumbers} numbers correctly.`;
+            guessOptions.style.display = 'none'; // Hide guess options and wait for next round
+        } else {
+            resultParagraph.textContent = `Computer's guess was ${computerGuess.join(' ')},  you selected ${selectedCorrect} position correct. Try again.`;
+            guessOptions.style.display = 'block'; // Keep guess options visible until correct
         }
     }
 
@@ -133,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         guessOptions.style.display = 'none'; // Hide guess options
         submitButton.disabled = false; // Enable the submit button for new round
         previousComputerGuesses = []; // Reset previous guesses
-        computerGuessedCorrectly = false; // Reset the computer's guess state
+        attempts = 0; // Reset attempts to 0
         dynamicText.textContent = 'Guess the 3 numbers chosen by the computer.';
     }
 
@@ -147,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     generateRandomNumbers();
-    dynamicText.textContent = 'Guess the 3 numbers chosen by the computer.';
+    dynamicText.textContent = 'Guess the 3 Numbers chosen by the Computer ;)';
 
     submitButton.addEventListener('click', handlePlayerGuess);
     guessOptionButtons.forEach(button => button.addEventListener('click', handleGuessOptionClick));
